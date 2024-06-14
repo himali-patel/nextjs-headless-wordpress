@@ -62,7 +62,6 @@ export default function Page( props: Props ) {
 			</Head>
 			<SiteHeader headerLink={props.headerLink}  menuItems={props.menuItems}/>
 			<main>
-				<h1>{props.title}</h1>
 				{props.children}
 			</main>
 			<SiteFooter />

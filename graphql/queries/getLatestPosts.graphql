@@ -1,0 +1,22 @@
+query getLatestPosts {
+  posts(first: 10, where: {orderby: {order: DESC, field: DATE}}) {
+    edges {
+      node {
+        excerpt
+        id
+        title(format: RENDERED)
+        date
+        slug
+        featuredImage {
+          node {
+            altText
+            mediaDetails {
+              file
+            }
+            mediaItemUrl
+          }
+        }
+      }
+    }
+  }
+}

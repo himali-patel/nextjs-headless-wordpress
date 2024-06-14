@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Card from '@/components/Card/Card';
 import Page from '@/components/Page/Page';
 import getApolloClient from '@/graphql/apollo';
+import HeroSection from '@/components/HeroSection/HeroSection';
+import HomePostList from '@/components/HomePostList/HomePostList';
 import {
 	AllContentTypesDocument,
 	AllContentTypesQuery,
@@ -10,22 +12,27 @@ import {
 	GetMenuQuery,
 	MenuItemsFieldFragment,
 	GetMenuDocument,
+	GetLatestPostsDocument, 
+	GetLatestPostsQuery
 } from '@/graphql/generated';
 
 type Props = {
 	contentTypes: ContentTypeFieldsFragment[],
-	menuItems: MenuItemsFieldFragment[],
+	menuItems: MenuItemsFieldFragment[];
+	posts: GetLatestPostsQuery['posts']['edges'];
 };
 
 export default function Home( props: Props ) {
 	return (
 		<Page
-			title="Welcome 👋"
+			title="Headless WordPress Next.js Starter"
 			menuItems={props.menuItems}
 		>
-			<p>This decoupled WordPress site is built with WordPress VIP’s <a href="https://github.com/Automattic/vip-go-nextjs-skeleton">Next.js boilerplate</a> and <a href="https://github.com/Automattic/vip-decoupled-bundle">decoupled plugin bundle</a>. If you’re seeing this page, it means your decoupled site has been successfully deployed. Please take a moment to read through this introduction, which supplements <a href="https://docs.wpvip.com/technical-references/vip-platform/node-js/">our public documentation</a> and the <code>README</code> of this repo.</p>
+			<HeroSection />
 
-			<nav>
+ 			<HomePostList posts={props.posts} />
+
+			{/* <nav>
 				<ul>
 					<li><a href="#getting-started">Getting started</a></li>
 					<li><a href="#your-content">Your content</a></li>
@@ -50,7 +57,7 @@ export default function Home( props: Props ) {
 				</ul>
 			</Card>
 			<h3 id="previewing">Previewing</h3>
-			<p>Previewing unpublished posts or updates to published posts works out of the box. Simply click the “Preview” button in WordPress and you’ll be redirected to a one-time-use preview link on this decoupled site.</p>
+			<p>Previewing unpublished posts or updates to published posts works out of the box. Simply click the “Preview” button in WordPress and you’ll be redirected to a one-time-use preview link on this decoupled site.</p> */}
 		</Page>
 	);
 }
@@ -70,10 +77,18 @@ export const getStaticProps: GetStaticProps<Props> = async ( context ) => {
 	});
 	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
 
+	//Fetch Latest Posts.
+	const postsResult = await getApolloClient(context).query<GetLatestPostsQuery>({
+		query: GetLatestPostsDocument,
+	});
+
+	const posts = postsResult.data.posts.edges;
+
 	return {
 		props: {
 			contentTypes: contentTypes.filter( contentType => contentType.contentNodes.nodes.length ),
-			menuItems
+			menuItems,
+			posts
 		},
 	};
 };
