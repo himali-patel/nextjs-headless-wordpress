@@ -1,0 +1,6 @@
+fragment MenuItemsField on MenuItem {
+	id
+	label
+	url
+	path
+}

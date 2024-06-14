@@ -1,8 +1,12 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import {
+	MenuItemsFieldFragment,
+} from '@/graphql/generated';
 
 type Props = {
 	headerLink?: ReactNode,
+	menuItems:  MenuItemsFieldFragment[];
 };
 
 /**
@@ -24,7 +28,11 @@ export default function SiteHeader( props: Props ) {
 			</div>
 			<nav className='navigation-menu w-3/4 my-0'>
 				<ul className='flex py-2 justify-end'>
-				
+					{props.menuItems.map((menuItem) => (
+						<li key={menuItem.id} className='px-6 my-0 text-white hover:text-white'>
+							<Link href={menuItem.url} className='text-white text-white'>{menuItem.label}</Link>
+						</li>
+					))}
 				</ul>
 			</nav>
 		

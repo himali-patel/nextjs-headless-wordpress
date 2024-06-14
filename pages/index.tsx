@@ -7,16 +7,21 @@ import {
 	AllContentTypesDocument,
 	AllContentTypesQuery,
 	ContentTypeFieldsFragment,
+	GetMenuQuery,
+	MenuItemsFieldFragment,
+	GetMenuDocument,
 } from '@/graphql/generated';
 
 type Props = {
 	contentTypes: ContentTypeFieldsFragment[],
+	menuItems: MenuItemsFieldFragment[],
 };
 
 export default function Home( props: Props ) {
 	return (
 		<Page
 			title="Welcome 👋"
+			menuItems={props.menuItems}
 		>
 			<p>This decoupled WordPress site is built with WordPress VIP’s <a href="https://github.com/Automattic/vip-go-nextjs-skeleton">Next.js boilerplate</a> and <a href="https://github.com/Automattic/vip-decoupled-bundle">decoupled plugin bundle</a>. If you’re seeing this page, it means your decoupled site has been successfully deployed. Please take a moment to read through this introduction, which supplements <a href="https://docs.wpvip.com/technical-references/vip-platform/node-js/">our public documentation</a> and the <code>README</code> of this repo.</p>
 
@@ -59,9 +64,16 @@ export const getStaticProps: GetStaticProps<Props> = async ( context ) => {
 
 	const contentTypes = data.contentTypes.nodes || [];
 
+	// Query to Fetch Header Menus.
+	const menuResult = await getApolloClient(context).query<GetMenuQuery>({
+		query: GetMenuDocument,
+	});
+	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
+
 	return {
 		props: {
 			contentTypes: contentTypes.filter( contentType => contentType.contentNodes.nodes.length ),
+			menuItems
 		},
 	};
 };

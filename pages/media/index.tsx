@@ -6,12 +6,16 @@ import {
 	AllMediaItemsDocument,
 	AllMediaItemsQuery,
 	MediaItemFieldsFragment,
+	GetMenuQuery,
+	MenuItemsFieldFragment,
+	GetMenuDocument,
 } from '@/graphql/generated';
 import styles from './index.module.css';
 
 type Props = {
 	loading: boolean,
 	mediaItems: MediaItemFieldsFragment[],
+	menuItems: MenuItemsFieldFragment[]
 };
 
 export default function Media( props: Props ) {
@@ -19,6 +23,7 @@ export default function Media( props: Props ) {
 		<Page
 			loading={props.loading}
 			title="Media Gallery"
+			menuItems={props.menuItems || []}
 		>
 			<div className={styles.container}>
 				{
@@ -63,10 +68,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async ( context ) =
 
 	const mediaItems = data.mediaItems?.nodes;
 
+	// Query to Fetch Header Menus.
+	const menuResult = await getApolloClient(context).query<GetMenuQuery>({
+		query: GetMenuDocument,
+	});
+	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
+
 	return {
 		props: {
 			loading,
 			mediaItems,
+			menuItems
 		},
 	};
 }

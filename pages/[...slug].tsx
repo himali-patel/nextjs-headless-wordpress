@@ -6,12 +6,16 @@ import {
 	ContentNodeBySlugDocument,
 	ContentNodeBySlugQuery,
 	ContentNodeFieldsFragment,
+	GetMenuQuery,
+	MenuItemsFieldFragment,
+	GetMenuDocument,
 } from '@/graphql/generated';
 import { extractLastTokenFromRoute, getInternalLinkPathname } from '@/lib/links';
 
 export type PostProps = {
 	loading: boolean,
 	post: ContentNodeFieldsFragment,
+	menuItems: MenuItemsFieldFragment[]
 };
 
 export default function Post( props: PostProps ) {
@@ -23,6 +27,7 @@ export default function Post( props: PostProps ) {
 		<Page
 			loading={props.loading}
 			title={props.post.title}
+			menuItems={props.menuItems || []}
 		>
 			<PostContent blocks={props.post.contentBlocks.blocks} />
 		</Page>
@@ -61,10 +66,17 @@ export const getServerSideProps: GetServerSideProps<PostProps> = async ( context
 		};
 	}
 
+	// Query to Fetch Header Menus.
+	const menuResult = await getApolloClient(context).query<GetMenuQuery>({
+		query: GetMenuDocument,
+	});
+	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
+
 	return {
 		props: {
 			loading,
 			post,
+			menuItems
 		},
 	};
 }

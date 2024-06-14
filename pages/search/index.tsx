@@ -8,6 +8,9 @@ import {
 	ContentNodesBySearchTermDocument,
 	ContentNodesBySearchTermQuery,
 	ContentNodesBySearchTermQueryVariables,
+	GetMenuQuery,
+	MenuItemsFieldFragment,
+	GetMenuDocument,
 } from '@/graphql/generated';
 
 type Props = {
@@ -16,6 +19,7 @@ type Props = {
 	posts: ContentNodeFieldsFragment[],
 	previousPageLink?: string,
 	search: string,
+	menuItems: MenuItemsFieldFragment[]
 };
 
 export default function Search( props: Props ) {
@@ -23,6 +27,7 @@ export default function Search( props: Props ) {
 		<Page
 			loading={props.loading}
 			title={`Search results for ${ props.search }`}
+			menuItems={props.menuItems}
 		>
 			<SearchForm
 				path="/search"
@@ -32,6 +37,7 @@ export default function Search( props: Props ) {
 				nextPageLink={props.nextPageLink}
 				posts={props.posts}
 				previousPageLink={props.previousPageLink}
+				
 			/>
 		</Page>
 	);
@@ -49,6 +55,7 @@ export const getServerSideProps: GetServerSideProps<Props, ContextParams> = asyn
 				loading: false,
 				posts: [],
 				search: '',
+				menuItems: [],
 			},
 		};
 	}
@@ -102,6 +109,12 @@ export const getServerSideProps: GetServerSideProps<Props, ContextParams> = asyn
 		previousPageLink = `?${ newQueryParams.toString() }`;
 	}
 
+	// Query to Fetch Header Menus.
+	const menuResult = await getApolloClient(context).query<GetMenuQuery>({
+		query: GetMenuDocument,
+	});
+	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
+
 	return {
 		props: {
 			loading,
@@ -109,6 +122,7 @@ export const getServerSideProps: GetServerSideProps<Props, ContextParams> = asyn
 			posts,
 			previousPageLink,
 			search,
+			menuItems,
 		},
 	};
 }

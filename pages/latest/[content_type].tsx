@@ -7,6 +7,9 @@ import {
 	ContentTypeByNameDocument,
 	ContentTypeByNameQuery,
 	ContentTypeByNameQueryVariables,
+	GetMenuQuery,
+	MenuItemsFieldFragment,
+	GetMenuDocument,
 } from '@/graphql/generated';
 
 type Props = {
@@ -15,6 +18,7 @@ type Props = {
 	posts: ContentNodeFieldsFragment[],
 	previousPageLink?: string,
 	title: string,
+	menuItems: MenuItemsFieldFragment[],
 };
 
 export default function ContentNodes( props: Props ) {
@@ -22,6 +26,7 @@ export default function ContentNodes( props: Props ) {
 		<Page
 			loading={props.loading}
 			title={props.title}
+			menuItems={props.menuItems}
 		>
 			<PostList
 				nextPageLink={props.nextPageLink}
@@ -90,6 +95,12 @@ export const getServerSideProps: GetServerSideProps<Props, ContextParams> = asyn
 		};
 	}
 
+	// Query to Fetch Header Menus.
+	const menuResult = await getApolloClient(context).query<GetMenuQuery>({
+		query: GetMenuDocument,
+	});
+	const menuItems = menuResult.data.menuItems?.edges.map((edge) => edge.node) || [];
+
 	return {
 		props: {
 			loading,
@@ -97,6 +108,7 @@ export const getServerSideProps: GetServerSideProps<Props, ContextParams> = asyn
 			posts,
 			previousPageLink,
 			title,
+			menuItems,
 		},
 	};
 }

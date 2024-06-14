@@ -45,10 +45,14 @@ export const getServerSideProps: GetServerSideProps<PreviewProps> = async ( cont
 		};
 	}
 
+	
+
 	return {
 		props: {
 			loading,
 			post,
+			menuItems: [],
+
 		},
 	};
 }
