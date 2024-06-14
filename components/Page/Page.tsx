@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import Head from 'next/head';
 import Loading from '@/components/Loading/Loading';
+import { useRouter } from 'next/router';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import {
@@ -30,6 +31,9 @@ export default function Page( props: Props ) {
 	const {
 		loading = false,
 	} = props;
+
+	const router = useRouter();
+	const isHomePage = router.pathname === '/';
 
 	if ( loading ) {
 		return <Loading />;
@@ -62,7 +66,16 @@ export default function Page( props: Props ) {
 			</Head>
 			<SiteHeader headerLink={props.headerLink}  menuItems={props.menuItems}/>
 			<main>
-				{props.children}
+			{isHomePage ? (
+					<>
+						{props.children}
+					</>
+				) : (
+					<div className='container mx-auto mt-16'>
+						{props.title && <h1 className='text-4xl font-bold mb-9'>{props.title}</h1>}
+						{props.children}
+					</div>
+				)}
 			</main>
 			<SiteFooter />
 		</>
