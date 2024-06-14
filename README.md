@@ -1,1 +1,1 @@
-# nextjs-headless-wordpress
+# nextjs-headless-wordpress learning demo
