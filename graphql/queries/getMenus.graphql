@@ -1,7 +1,7 @@
 #import "../fragments/MenuItems.graphql"
 
 query getMenu {
-	 menuItems(where: {location: MENU_1}) {
+	 menuItems(where: {location: PRIMARY}) {
 	  edges {
 		node {
 			...MenuItemsField
