@@ -7,7 +7,7 @@
 // Do not change the file extenstion to .ts.
 //
 // Have fun! 🚀
-
+const path = require( 'path' );
 const { wordPressEndpoint } = require( './vip.config' );
 
 // Next.js currently doesn't have a good way to match all paths including the
@@ -150,6 +150,13 @@ module.exports = {
 	// https://github.com/Automattic/vip-go-nextjs-skeleton/tree/example/custom-server-trailing-slash
 	// https://nextjs.org/docs/advanced-features/custom-server
 	trailingSlash: false,
+
+	
+
+	sassOptions: {
+		includePaths: [ path.join( __dirname, 'styles' ), path.join(__dirname, 'node_modules') ],
+		precision: 6,
+	},
 
 	// Image Optimization
 	// ==================

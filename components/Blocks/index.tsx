@@ -7,6 +7,8 @@ import List from './List/List';
 import Paragraph from './Paragraph/Paragraph';
 import Quote from './Quote/Quote';
 import Table from './Table/Table';
+import Buttons from './Buttons/Buttons';
+import MDPrimeSample from './MDPrime-Sample/MdPrimeSample';
 
 export interface BlockProps {
 	block: ContentBlock,
@@ -24,6 +26,8 @@ const defaultBlockMap: PostContentBlockMap = {
 	'core/paragraph': Paragraph,
 	'core/quote': Quote,
 	'core/table': Table,
+	'core/buttons': Buttons,
+	'md-prime/sample': MDPrimeSample,
 };
 
 export default defaultBlockMap;
