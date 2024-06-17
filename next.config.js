@@ -33,6 +33,7 @@ module.exports = {
 			'lib',
 			'pages',
 			'server',
+			'public',
 		],
 		// Warning: Dangerously allow production builds to successfully complete even
 		// if your project has ESLint errors. This allows us to keep ESLint as a
